@@ -1,6 +1,12 @@
 // To run Tests, from module root directory, type "mocha"
 var assert = require('assert'), le = require('../lib/le_node.js'); // le=require('le_node')
-var myToken = 'YOUR_LE_TOKEN';
+var myToken = process.env.TOKEN;
+
+if (!myToken) {
+	console.log('Please set an environment variable "TOKEN", with a valid LogEntries token.');
+	process.exit(1);
+}
+
 var logger = le.logger({ token: myToken });
 var errs=[], lines=[];
 
@@ -40,9 +46,9 @@ describe('logentries node logger default level=info',function(){
     console.log('lines',lines.length);
     assert(len==8);
   });
-  
+
   it('should have a few pointless random checks', function(){
-    assert(lines[0].length==93);
+    assert(lines[0].length==71);
     var n = myToken.length;
     assert(lines[0].substr(0,n)==myToken);
    });

@@ -15,6 +15,9 @@
     "README.md",
     "lib/le_node.js" 
   ],
+  "scripts": {
+    "test": "mocha"
+  },
   "engines": {
     "node": "*"
   }
