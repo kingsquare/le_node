@@ -12,11 +12,11 @@ var errs=[], lines=[];
 
 logger.on('error',function(err){
   errs.push(err);
-})
+});
 
 logger.on('log',function(line){
   lines.push(line);
-})
+});
 
 function logStuff(){
   console.log('Logging Stuff');
@@ -48,7 +48,7 @@ describe('logentries node logger default level=info',function(){
   });
 
   it('should have a few pointless random checks', function(){
-    assert(lines[0].length==71);
+    assert(lines[0].length==94);
     var n = myToken.length;
     assert(lines[0].substr(0,n)==myToken);
    });
@@ -69,6 +69,27 @@ describe('logentries node logger level=warning',function(){
     assert(lines.length==5);
   });
 
+});
+
+describe('logentries',function(){
+	it('should be able to pass hostname and hostid', function(done){
+		var loggedLine;
+		var loggerWithHostNameAndHostId = le.logger({
+			token: myToken,
+			host_id: 'my_host_id',
+			host_name: 'my.test.localhost'
+		});
+		loggerWithHostNameAndHostId.on('log', function(line){
+			loggedLine = line;
+		});
+		loggerWithHostNameAndHostId.info('Infomessage with host_name and host_id');
+		//Wait for logger to flush out. Since there is no "drain"-event emitted by the que, just wait a sec...');
+		setTimeout(function () {
+			assert(loggedLine.indexOf('host_ID=my_host_id host_name=my.test.localhost') > -1);
+			loggerWithHostNameAndHostId.end();
+			done();
+		}, 1000);
+	});
 });
 
 logger.end();
